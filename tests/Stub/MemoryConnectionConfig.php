@@ -18,12 +18,12 @@ class MemoryConnectionConfig implements ConnectionConfigInterface
         $this->projectId = $projectId;
     }
 
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return 'public';
     }
 
-    public function getPrivateKey()
+    public function getPrivateKey(): string
     {
         return 'private';
     }
@@ -33,52 +33,52 @@ class MemoryConnectionConfig implements ConnectionConfigInterface
         return null;
     }
 
-    public function getHost()
+    public function getHost(): string
     {
         return $this->host;
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->host !== '' || $this->port !== 0;
     }
 
-    public function getPort()
+    public function getPort(): int
     {
         return $this->port;
     }
 
-    public function getProjectId()
+    public function getProjectId(): int
     {
         return $this->projectId;
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return '/';
     }
 
-    public function getProtocol()
+    public function getProtocol(): string
     {
         return 'http';
     }
 
-    public function isVerifySSL()
+    public function isVerifySSL(): bool
     {
         return false;
     }
 
-    public function getSelectTimeoutSec()
+    public function getSelectTimeoutSec(): float
     {
         return 0;
     }
 
-    public function getConnectTimeoutSec()
+    public function getConnectTimeoutSec(): float
     {
         return 0;
     }
 
-    public function useBulkSend()
+    public function useBulkSend(): bool
     {
         return false;
     }

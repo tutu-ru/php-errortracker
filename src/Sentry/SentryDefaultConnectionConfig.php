@@ -18,15 +18,15 @@ class SentryDefaultConnectionConfig implements ConnectionConfigInterface
     }
 
 
-    public function getPublicKey()
+    public function getPublicKey(): string
     {
         return (string)$this->config->getValue('errortracker.public_key', null, true);
     }
 
 
-    public function getPrivateKey()
+    public function getPrivateKey(): string
     {
-        return $this->config->getValue('errortracker.private_key', null, true);
+        return (string)$this->config->getValue('errortracker.private_key', null, true);
     }
 
 
@@ -36,9 +36,9 @@ class SentryDefaultConnectionConfig implements ConnectionConfigInterface
     }
 
 
-    public function getHost()
+    public function getHost(): string
     {
-        return $this->config->getValue('errortracker.host', null, true);
+        return (string)$this->config->getValue('errortracker.host', null, true);
     }
 
 
@@ -48,33 +48,33 @@ class SentryDefaultConnectionConfig implements ConnectionConfigInterface
     }
 
 
-    public function getPort()
+    public function getPort(): int
     {
-        return $this->config->getValue('errortracker.port', null, true);
+        return (int)$this->config->getValue('errortracker.port', null, true);
     }
 
 
-    public function getProjectId()
+    public function getProjectId(): int
     {
-        return $this->config->getValue('errortracker.project_id', null, true);
+        return (int)$this->config->getValue('errortracker.project_id', null, true);
     }
 
 
-    public function getPath()
+    public function getPath(): string
     {
-        return $this->config->getValue('errortracker.path', '/');
+        return (string)$this->config->getValue('errortracker.path', '/');
     }
 
 
-    public function getProtocol()
+    public function getProtocol(): string
     {
-        return $this->config->getValue('errortracker.protocol', 'http');
+        return (string)$this->config->getValue('errortracker.protocol', 'http');
     }
 
 
-    public function isVerifySSL()
+    public function isVerifySSL(): bool
     {
-        return $this->config->getValue('errortracker.verify_ssl', 1);
+        return (bool)$this->config->getValue('errortracker.verify_ssl', 1);
     }
 
 

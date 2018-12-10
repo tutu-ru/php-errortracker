@@ -5,65 +5,29 @@ namespace TutuRu\ErrorTracker;
 
 interface ConnectionConfigInterface
 {
-    /**
-     * @return string
-     */
-    public function getPublicKey();
+    public function getPublicKey(): string;
 
-    /**
-     * @return string
-     */
-    public function getPrivateKey();
+    public function getPrivateKey(): string;
 
     public function getProjectSlug(): ?string;
 
-    /**
-     * @return string
-     */
-    public function getHost();
+    public function getHost(): string;
 
-    /**
-     * @return boolean
-     */
-    public function isValid();
+    public function isValid(): bool;
 
-    /**
-     * @return integer
-     */
-    public function getPort();
+    public function getPort(): int;
 
-    /**
-     * @return integer
-     */
-    public function getProjectId();
+    public function getProjectId(): int;
 
-    /**
-     * @return string
-     */
-    public function getPath();
+    public function getPath(): string;
 
-    /**
-     * @return string
-     */
-    public function getProtocol();
+    public function getProtocol(): string;
 
-    /**
-     * @return int
-     */
-    public function isVerifySSL();
+    public function isVerifySSL(): bool;
 
-    /**
-     * @return float
-     */
-    public function getSelectTimeoutSec();
+    public function getSelectTimeoutSec(): float;
 
-    /**
-     * @return float
-     */
-    public function getConnectTimeoutSec();
+    public function getConnectTimeoutSec(): float;
 
-    /**
-     * @return bool
-     */
-    public function useBulkSend();
+    public function useBulkSend(): bool;
 }
