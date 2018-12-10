@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace TutuRu\ErrorTracker\Sentry;
 
 use TutuRu\Config\ConfigContainer;
+use TutuRu\Config\EnvironmentUtils;
 use TutuRu\ErrorTracker\ConnectionConfigInterface;
 
 class SentryClientFactory implements SentryClientFactoryInterface
@@ -27,7 +28,7 @@ class SentryClientFactory implements SentryClientFactoryInterface
         $options = [
             'timeout'     => $config->getConnectTimeoutSec(),
             'curl_method' => 'sync',
-            'name'        => $this->config->getServerHostname(),
+            'name'        => EnvironmentUtils::getServerHostname(),
         ];
         if ($this->release) {
             $options['release'] = $this->release;

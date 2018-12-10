@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use TutuRu\Config\ConfigContainer;
 use TutuRu\Metrics\SessionRegistryInterface;
-use TutuRu\Metrics\UdpMetricsFactory;
+use TutuRu\Tests\Metrics\MemoryMetrics\MemoryMetrics;
 
 abstract class BaseTest extends TestCase
 {
@@ -24,8 +24,7 @@ abstract class BaseTest extends TestCase
     {
         parent::setUp();
         $this->config = new ConfigContainer();
-        // TODO: memory metrics
-        $this->metricsSessionRegistry = UdpMetricsFactory::createSessionRegistry($this->config);
+        $this->metricsSessionRegistry = MemoryMetrics::createSessionRegistry($this->config, $this->logger);
         $this->logger = new NullLogger();
     }
 }
