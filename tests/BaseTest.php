@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use TutuRu\Config\ConfigContainer;
 use TutuRu\Metrics\SessionRegistryInterface;
+use TutuRu\Tests\Config\JsonConfig\JsonConfigFactory;
 use TutuRu\Tests\Metrics\MemoryMetrics\MemoryMetrics;
 
 abstract class BaseTest extends TestCase
@@ -23,7 +24,7 @@ abstract class BaseTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->config = new ConfigContainer();
+        $this->config = JsonConfigFactory::createConfig(__DIR__ . '/configs/app.json');
         $this->metricsSessionRegistry = MemoryMetrics::createSessionRegistry($this->config, $this->logger);
         $this->logger = new NullLogger();
     }
