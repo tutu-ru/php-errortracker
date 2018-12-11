@@ -5,16 +5,11 @@ namespace TutuRu\ErrorTracker;
 
 interface ErrorTrackerInterface
 {
-    public function send(
-        \Throwable $exception,
-        array $context = [],
-        array $tags = [],
-        string $connectionId = null
-    ): void;
+    public function send(\Throwable $exception, array $context = [], array $tags = [], string $teamId = null): void;
 
     public function sendUnsentErrors(): void;
 
-    public function registerConnectionConfig(string $connectionId, ConnectionConfigInterface $connectionConfig): void;
+    public function registerConnectionConfig(string $teamId, TeamConfigInterface $teamConfig): void;
 
     public function setTagsPreparer(TagsPreparerInterface $tagsPreparer): void;
 }

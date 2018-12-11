@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace TutuRu\ErrorTracker\Sentry;
 
 use TutuRu\Config\ConfigContainer;
-use TutuRu\ErrorTracker\ConnectionConfigInterface;
+use TutuRu\ErrorTracker\TeamConfigInterface;
 
-class SentryDefaultConnectionConfig implements ConnectionConfigInterface
+class SentryDefaultTeamConfig implements TeamConfigInterface
 {
     /** @var ConfigContainer */
     private $config;

@@ -5,7 +5,7 @@ namespace TutuRu\ErrorTracker\Sentry;
 
 use TutuRu\Config\ConfigContainer;
 use TutuRu\Config\EnvironmentUtils;
-use TutuRu\ErrorTracker\ConnectionConfigInterface;
+use TutuRu\ErrorTracker\TeamConfigInterface;
 
 class SentryClientFactory implements SentryClientFactoryInterface
 {
@@ -23,10 +23,10 @@ class SentryClientFactory implements SentryClientFactoryInterface
     }
 
 
-    public function create(ConnectionConfigInterface $config): SentryClient
+    public function create(TeamConfigInterface $teamConfig): SentryClient
     {
         $options = [
-            'timeout'     => $config->getConnectTimeoutSec(),
+            'timeout'     => $teamConfig->getConnectTimeoutSec(),
             'curl_method' => 'sync',
             'name'        => EnvironmentUtils::getServerHostname(),
         ];
@@ -34,31 +34,31 @@ class SentryClientFactory implements SentryClientFactoryInterface
             $options['release'] = $this->release;
         }
 
-        if (!$config->isVerifySSL()) {
+        if (!$teamConfig->isVerifySSL()) {
             $options['verify_ssl'] = 0;
         }
 
         $url = sprintf(
             '%s://%s:%s@%s:%s%s%s',
-            $config->getProtocol(),
-            $config->getPublicKey(),
-            $config->getPrivateKey(),
-            $config->getHost(),
-            $config->getPort(),
-            $config->getPath(),
-            $config->getProjectId()
+            $teamConfig->getProtocol(),
+            $teamConfig->getPublicKey(),
+            $teamConfig->getPrivateKey(),
+            $teamConfig->getHost(),
+            $teamConfig->getPort(),
+            $teamConfig->getPath(),
+            $teamConfig->getProjectId()
         );
 
         $client = $this->createNativeClient($url, $options);
         $client->setTimeouts(
-            round($config->getConnectTimeoutSec() * 1000),
-            round($config->getSelectTimeoutSec() * 1000)
+            round($teamConfig->getConnectTimeoutSec() * 1000),
+            round($teamConfig->getSelectTimeoutSec() * 1000)
         );
 
-        if (!$config->isVerifySSL()) {
+        if (!$teamConfig->isVerifySSL()) {
             $client->disableVerifySSL();
         }
-        if ($config->useBulkSend()) {
+        if ($teamConfig->useBulkSend()) {
             $client->store_errors_for_bulk_send = true;
         }
 

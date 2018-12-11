@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\ErrorTracker;
 
-use TutuRu\Tests\ErrorTracker\Stub\MemoryConnectionConfig;
+use TutuRu\Tests\ErrorTracker\Stub\MemoryTeamConfig;
 use TutuRu\Tests\ErrorTracker\Stub\MemoryErrorTrackerFactory;
 
 class ErrorTrackerTest extends BaseTest
@@ -32,7 +32,7 @@ class ErrorTrackerTest extends BaseTest
     {
         $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsSessionRegistry);
         $tracker->setLogger($this->logger);
-        $tracker->registerConnectionConfig('second', new MemoryConnectionConfig("second", 31416, 27183));
+        $tracker->registerConnectionConfig('second', new MemoryTeamConfig("second", 31416, 27183));
 
         $tracker->send(new \Exception('1'));
         $tracker->send(new \Exception('2'), [], [], 'second');
@@ -55,7 +55,7 @@ class ErrorTrackerTest extends BaseTest
     {
         $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsSessionRegistry);
         $tracker->setLogger($this->logger);
-        $tracker->registerConnectionConfig('second', new MemoryConnectionConfig("", 0, 27183));
+        $tracker->registerConnectionConfig('second', new MemoryTeamConfig("", 0, 27183));
 
         $tracker->send(new \Exception('1'));
         $tracker->send(new \Exception('2'), [], [], 'second');
@@ -73,7 +73,7 @@ class ErrorTrackerTest extends BaseTest
     {
         $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsSessionRegistry);
         $tracker->setLogger($this->logger);
-        $tracker->registerConnectionConfig('second', new MemoryConnectionConfig("", 31416, 27183));
+        $tracker->registerConnectionConfig('second', new MemoryTeamConfig("", 31416, 27183));
 
         $tracker->send(new \Exception('1'));
         $tracker->send(new \Exception('2'), [], [], 'second');

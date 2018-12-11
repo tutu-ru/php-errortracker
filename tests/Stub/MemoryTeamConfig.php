@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\ErrorTracker\Stub;
 
-use TutuRu\ErrorTracker\ConnectionConfigInterface;
+use TutuRu\ErrorTracker\TeamConfigInterface;
 
-class MemoryConnectionConfig implements ConnectionConfigInterface
+class MemoryTeamConfig implements TeamConfigInterface
 {
     private $host;
     private $port;

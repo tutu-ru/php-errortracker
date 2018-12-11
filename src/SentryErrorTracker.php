@@ -15,14 +15,13 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     use LoggerAwareTrait;
     use MetricsAwareTrait;
 
-    /** Дефолтная команда в Sentry в которую по-умолчанию попадают ошибки */
-    const CONNECTION_CONFIG_SUPPORT_TEAM = 'support';
+    const DEFAULT_TEAM_ID = 'default';
 
     /** @var SentryClient[] */
     private $clients;
 
-    /** @var ConnectionConfigInterface[] */
-    private $connectionConfigs;
+    /** @var TeamConfigInterface[] */
+    private $teamConfigs;
 
     /** @var TagsPreparerInterface */
     private $tagsPreparer = null;
@@ -37,19 +36,15 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     }
 
 
-    public function send(
-        \Throwable $exception,
-        array $context = [],
-        array $tags = [],
-        string $connectionId = null
-    ): void {
-        $connectionId = $connectionId ?? self::CONNECTION_CONFIG_SUPPORT_TEAM;
-        $projectSlug = $this->getConfig($connectionId)->getProjectSlug();
+    public function send(\Throwable $exception, array $context = [], array $tags = [], string $teamId = null): void
+    {
+        $teamId = $teamId ?? self::DEFAULT_TEAM_ID;
+        $projectSlug = $this->getConfig($teamId)->getProjectSlug();
         $statsCollector = new TrackingMetricsCollector($exception, $projectSlug, $this->getMetricsSessionRegistry());
         $statsCollector->startTiming();
         $client = null;
         try {
-            if ($client = $this->getClient($connectionId)) {
+            if ($client = $this->getClient($teamId)) {
                 if ($exception instanceof \ErrorException) {
                     $statsCollector->setSeverityLabel($client->translateSeverity($exception->getSeverity()));
                 }
@@ -80,7 +75,7 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     public function sendUnsentErrors(): void
     {
         try {
-            if (!($client = $this->getClient(self::CONNECTION_CONFIG_SUPPORT_TEAM))) {
+            if (!($client = $this->getClient(self::DEFAULT_TEAM_ID))) {
                 return;
             }
             $client->sendUnsentErrors();
@@ -96,9 +91,9 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     }
 
 
-    public function registerConnectionConfig(string $connectionId, ConnectionConfigInterface $connectionConfig): void
+    public function registerConnectionConfig(string $teamId, TeamConfigInterface $teamConfig): void
     {
-        $this->connectionConfigs[$connectionId] = $connectionConfig;
+        $this->teamConfigs[$teamId] = $teamConfig;
     }
 
 
@@ -108,21 +103,21 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     }
 
 
-    private function getConfig(string $connectionId): ConnectionConfigInterface
+    private function getConfig(string $teamId): TeamConfigInterface
     {
-        return $this->connectionConfigs[$connectionId] ?? $this->connectionConfigs[self::CONNECTION_CONFIG_SUPPORT_TEAM];
+        return $this->teamConfigs[$teamId] ?? $this->teamConfigs[self::DEFAULT_TEAM_ID];
     }
 
 
-    private function getClient(string $connectionId): ?SentryClient
+    private function getClient(string $teamId): ?SentryClient
     {
-        if (empty($this->clients[$connectionId])) {
-            $config = $this->getConfig($connectionId);
+        if (empty($this->clients[$teamId])) {
+            $config = $this->getConfig($teamId);
             if (!$config->isValid()) {
                 return null;
             }
-            $this->clients[$connectionId] = $this->clientFactory->create($config);
+            $this->clients[$teamId] = $this->clientFactory->create($config);
         }
-        return $this->clients[$connectionId];
+        return $this->clients[$teamId];
     }
 }
