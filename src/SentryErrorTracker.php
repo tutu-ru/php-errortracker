@@ -16,7 +16,7 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     use MetricsAwareTrait;
 
     /** Дефолтная команда в Sentry в которую по-умолчанию попадают ошибки */
-    const TEAM_CONFIG_SUPPORT = 'config_support';
+    const CONNECTION_CONFIG_SUPPORT_TEAM = 'support';
 
     /** @var SentryClient[] */
     private $clients;
@@ -43,7 +43,7 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
         array $tags = [],
         string $connectionId = null
     ): void {
-        $connectionId = $connectionId ?? self::TEAM_CONFIG_SUPPORT;
+        $connectionId = $connectionId ?? self::CONNECTION_CONFIG_SUPPORT_TEAM;
         $projectSlug = $this->getConfig($connectionId)->getProjectSlug();
         $statsCollector = new TrackingMetricsCollector($exception, $projectSlug, $this->getMetricsSessionRegistry());
         $statsCollector->startTiming();
@@ -80,7 +80,7 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     public function sendUnsentErrors(): void
     {
         try {
-            if (!($client = $this->getClient(self::TEAM_CONFIG_SUPPORT))) {
+            if (!($client = $this->getClient(self::CONNECTION_CONFIG_SUPPORT_TEAM))) {
                 return;
             }
             $client->sendUnsentErrors();
@@ -110,7 +110,7 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
 
     private function getConfig(string $connectionId): ConnectionConfigInterface
     {
-        return $this->connectionConfigs[$connectionId] ?? $this->connectionConfigs[self::TEAM_CONFIG_SUPPORT];
+        return $this->connectionConfigs[$connectionId] ?? $this->connectionConfigs[self::CONNECTION_CONFIG_SUPPORT_TEAM];
     }
 
 

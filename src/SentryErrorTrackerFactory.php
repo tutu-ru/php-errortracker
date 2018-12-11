@@ -13,7 +13,7 @@ class SentryErrorTrackerFactory
     {
         $errorTracker = new SentryErrorTracker(new SentryClientFactory($config, $release));
         $errorTracker->registerConnectionConfig(
-            SentryErrorTracker::TEAM_CONFIG_SUPPORT,
+            SentryErrorTracker::CONNECTION_CONFIG_SUPPORT_TEAM,
             new SentryDefaultConnectionConfig($config)
         );
         return $errorTracker;

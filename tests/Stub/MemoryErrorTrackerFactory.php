@@ -16,7 +16,7 @@ class MemoryErrorTrackerFactory
     ): MemoryErrorTracker {
         $errorTracker = new MemoryErrorTracker(new MemorySentryClientFactory($config, $release));
         $errorTracker->registerConnectionConfig(
-            SentryErrorTracker::TEAM_CONFIG_SUPPORT,
+            SentryErrorTracker::CONNECTION_CONFIG_SUPPORT_TEAM,
             new MemoryConnectionConfig('test', 31415, 27182)
         );
         if (!is_null($metricsSessionsRegistry)) {
