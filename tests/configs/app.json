@@ -1,0 +1,10 @@
+{
+  "statsd": {
+    "enabled": 1,
+    "sessions": {
+      "work": {
+        "host": "localhost"
+      }
+    }
+  }
+}
