@@ -6,17 +6,17 @@ namespace TutuRu\Tests\ErrorTracker;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use TutuRu\Config\ConfigContainer;
-use TutuRu\Metrics\SessionRegistryInterface;
 use TutuRu\Tests\Config\JsonConfig\JsonConfigFactory;
-use TutuRu\Tests\Metrics\MemoryMetrics\MemoryMetrics;
+use TutuRu\Tests\Metrics\MemoryMetricsExporter\MemoryMetricsExporter;
+use TutuRu\Tests\Metrics\MemoryMetricsExporter\MemoryMetricsExporterFactory;
 
 abstract class BaseTest extends TestCase
 {
     /** @var ConfigContainer */
     protected $config;
 
-    /** @var SessionRegistryInterface */
-    protected $metricsSessionRegistry;
+    /** @var MemoryMetricsExporter */
+    protected $metricsExporter;
 
     /** @var LoggerInterface */
     protected $logger;
@@ -25,7 +25,7 @@ abstract class BaseTest extends TestCase
     {
         parent::setUp();
         $this->config = JsonConfigFactory::createConfig(__DIR__ . '/configs/app.json');
-        $this->metricsSessionRegistry = MemoryMetrics::createSessionRegistry($this->config, $this->logger);
         $this->logger = new NullLogger();
+        $this->metricsExporter = MemoryMetricsExporterFactory::create($this->config, $this->logger);
     }
 }

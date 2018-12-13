@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace TutuRu\Tests\ErrorTracker\Stub;
+namespace TutuRu\Tests\ErrorTracker\MemoryErrorTracker;
 
 use TutuRu\ErrorTracker\Sentry\SentryClient;
 
