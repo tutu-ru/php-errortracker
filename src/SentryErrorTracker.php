@@ -40,7 +40,8 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     {
         $teamId = $teamId ?? self::DEFAULT_TEAM_ID;
         $projectSlug = $this->getConfig($teamId)->getProjectSlug();
-        $statsCollector = new TrackingMetricsCollector($exception, $projectSlug, $this->getMetricsSessionRegistry());
+        $statsCollector = new TrackingMetricsCollector($exception, $projectSlug);
+        $statsCollector->setSeverityLabel(SentryClient::ERROR);
         $statsCollector->startTiming();
         $client = null;
         try {
@@ -54,21 +55,24 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
                 if ($error = $client->getLastError()) {
                     $statsCollector->registerProcessingFailure();
                     if (!is_null($this->logger)) {
-                        $this->logger->error($error, ['lib' => 'errortracker', 'operation' => 'send']);
+                        $this->logger->error($error, $this->getLogContext());
                     }
                 }
             }
         } catch (\Throwable $e) {
             $statsCollector->registerProcessingFailure();
             if (!is_null($this->logger)) {
-                $this->logger->error($e->__toString(), ['lib' => 'errortracker', 'operation' => 'send']);
+                $this->logger->error($e, $this->getLogContext());
             }
         }
         if ($client) {
             $client->context->clear();
         }
         $statsCollector->endTiming();
-        $statsCollector->save();
+
+        if (!is_null($this->metricsExporter)) {
+            $this->metricsExporter->saveCollector($statsCollector);
+        }
     }
 
 
@@ -81,11 +85,11 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
             $client->sendUnsentErrors();
             $lastError = $client->getLastError();
             if ($lastError && !is_null($this->logger)) {
-                $this->logger->error($lastError, ['lib' => 'errortracker', 'operation' => 'send']);
+                $this->logger->error($lastError, $this->getLogContext());
             }
         } catch (\Exception $e) {
             if (!is_null($this->logger)) {
-                $this->logger->error($e->__toString(), ['lib' => 'errortracker', 'operation' => 'send']);
+                $this->logger->error($e, $this->getLogContext());
             }
         }
     }
@@ -119,5 +123,11 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
             $this->clients[$teamId] = $this->clientFactory->create($config);
         }
         return $this->clients[$teamId];
+    }
+
+
+    private function getLogContext($operation = 'send'): array
+    {
+        return ['lib' => 'errortracker', 'operation' => $operation];
     }
 }
