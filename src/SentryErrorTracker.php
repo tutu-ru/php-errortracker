@@ -7,13 +7,13 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TutuRu\ErrorTracker\Sentry\SentryClient;
 use TutuRu\ErrorTracker\Sentry\SentryClientFactoryInterface;
-use TutuRu\Metrics\MetricsAwareInterface;
-use TutuRu\Metrics\MetricsAwareTrait;
+use TutuRu\Metrics\MetricAwareInterface;
+use TutuRu\Metrics\MetricAwareTrait;
 
-class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface, MetricsAwareInterface
+class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface, MetricAwareInterface
 {
     use LoggerAwareTrait;
-    use MetricsAwareTrait;
+    use MetricAwareTrait;
 
     const DEFAULT_TEAM_ID = 'default';
 
@@ -70,8 +70,8 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
         }
         $statsCollector->endTiming();
 
-        if (!is_null($this->metricsExporter)) {
-            $this->metricsExporter->saveCollector($statsCollector);
+        if (!is_null($this->statsdExporterClient)) {
+            $statsCollector->sendToStatsdExporter($this->statsdExporterClient);
         }
     }
 

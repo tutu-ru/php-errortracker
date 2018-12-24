@@ -5,7 +5,7 @@ namespace TutuRu\Tests\ErrorTracker;
 
 use TutuRu\Tests\ErrorTracker\MemoryErrorTracker\MemoryTeamConfig;
 use TutuRu\Tests\ErrorTracker\MemoryErrorTracker\MemoryErrorTrackerFactory;
-use TutuRu\Tests\Metrics\MemoryMetricsExporter\MemoryMetric;
+use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetric;
 
 class ErrorTrackerTest extends BaseTest
 {
@@ -27,7 +27,7 @@ class ErrorTrackerTest extends BaseTest
             $tracker->getExceptions()
         );
 
-        $this->metricsExporter->export();
+        $this->metricsExporter->save();
         $metrics = $this->metricsExporter->getExportedMetrics();
         $this->assertCount(3, $metrics);
         foreach ($metrics as $metric) {
@@ -63,7 +63,7 @@ class ErrorTrackerTest extends BaseTest
             $secondClient->getExceptions()
         );
 
-        $this->metricsExporter->export();
+        $this->metricsExporter->save();
         $metrics = $this->metricsExporter->getExportedMetrics();
         $this->assertCount(2, $metrics);
         foreach ($metrics as $metric) {
@@ -88,7 +88,7 @@ class ErrorTrackerTest extends BaseTest
             $defaultClient->getExceptions()
         );
 
-        $this->metricsExporter->export();
+        $this->metricsExporter->save();
         $metrics = $this->metricsExporter->getExportedMetrics();
         $this->assertCount(2, $metrics);
         foreach ($metrics as $metric) {
@@ -113,7 +113,7 @@ class ErrorTrackerTest extends BaseTest
             $defaultClient->getExceptions()
         );
 
-        $this->metricsExporter->export();
+        $this->metricsExporter->save();
         $metrics = $this->metricsExporter->getExportedMetrics();
         $this->assertCount(2, $metrics);
         $this->assertMetric($metrics[0], 'error_tracker_processing', $this->defaultTags('success'));
@@ -133,7 +133,7 @@ class ErrorTrackerTest extends BaseTest
             $tracker->getExceptions()
         );
 
-        $this->metricsExporter->export();
+        $this->metricsExporter->save();
         $metrics = $this->metricsExporter->getExportedMetrics();
         $this->assertCount(1, $metrics);
         foreach ($metrics as $metric) {
