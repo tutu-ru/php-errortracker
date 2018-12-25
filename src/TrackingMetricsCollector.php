@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace TutuRu\ErrorTracker;
 
-use TutuRu\Metrics\MetricsCollector;
+use TutuRu\Metrics\MetricCollector;
 
-class TrackingMetricsCollector extends MetricsCollector
+class TrackingMetricsCollector extends MetricCollector
 {
     /** @var \Exception */
     private $exception;
