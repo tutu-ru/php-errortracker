@@ -5,7 +5,7 @@ namespace TutuRu\ErrorTracker;
 
 use TutuRu\Metrics\MetricCollector;
 
-class TrackingMetricsCollector extends MetricCollector
+class TrackingMetricCollector extends MetricCollector
 {
     /** @var \Exception */
     private $exception;

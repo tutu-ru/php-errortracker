@@ -3,22 +3,17 @@ declare(strict_types=1);
 
 namespace TutuRu\ErrorTracker\Sentry;
 
-use TutuRu\Config\ConfigContainer;
 use TutuRu\Config\EnvironmentUtils;
 use TutuRu\ErrorTracker\TeamConfigInterface;
 
 class SentryClientFactory implements SentryClientFactoryInterface
 {
-    /** @var ConfigContainer */
-    private $config;
-
     /** @var string */
     private $release;
 
 
-    public function __construct(ConfigContainer $config, ?string $release)
+    public function __construct(?string $release)
     {
-        $this->config = $config;
         $this->release = $release;
     }
 

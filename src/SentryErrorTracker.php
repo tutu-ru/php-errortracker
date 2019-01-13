@@ -40,7 +40,7 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     {
         $teamId = $teamId ?? self::DEFAULT_TEAM_ID;
         $projectSlug = $this->getConfig($teamId)->getProjectSlug();
-        $statsCollector = new TrackingMetricsCollector($exception, $projectSlug);
+        $statsCollector = new TrackingMetricCollector($exception, $projectSlug);
         $statsCollector->setSeverityLabel(SentryClient::ERROR);
         $statsCollector->startTiming();
         $client = null;
