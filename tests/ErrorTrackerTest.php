@@ -46,7 +46,7 @@ class ErrorTrackerTest extends BaseTest
     {
         $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
         $tracker->setLogger($this->logger);
-        $tracker->registerConnectionConfig('second', new MemoryTeamConfig("second", 31416, 27183));
+        $tracker->registerTeamConfig('second', new MemoryTeamConfig("second", 31416, 27183));
 
         $tracker->send(new \Exception('1'));
         $tracker->send(new \Exception('2'), [], [], 'second');
@@ -76,7 +76,7 @@ class ErrorTrackerTest extends BaseTest
     {
         $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
         $tracker->setLogger($this->logger);
-        $tracker->registerConnectionConfig('second', new MemoryTeamConfig("", 0, 27183));
+        $tracker->registerTeamConfig('second', new MemoryTeamConfig("", 0, 27183));
 
         $tracker->send(new \Exception('1'));
         $tracker->send(new \Exception('2'), [], [], 'second');
@@ -101,7 +101,7 @@ class ErrorTrackerTest extends BaseTest
     {
         $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
         $tracker->setLogger($this->logger);
-        $tracker->registerConnectionConfig('second', new MemoryTeamConfig("", 31416, 27183));
+        $tracker->registerTeamConfig('second', new MemoryTeamConfig("", 31416, 27183));
 
         $tracker->send(new \Exception('1'));
         $tracker->send(new \Exception('2'), [], [], 'second');

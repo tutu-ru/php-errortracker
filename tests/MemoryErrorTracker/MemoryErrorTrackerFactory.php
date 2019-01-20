@@ -15,7 +15,7 @@ class MemoryErrorTrackerFactory
         ?StatsdExporterClientInterface $statsdExporterClient = null
     ): MemoryErrorTracker {
         $errorTracker = new MemoryErrorTracker(new MemorySentryClientFactory($release));
-        $errorTracker->registerConnectionConfig(
+        $errorTracker->registerTeamConfig(
             SentryErrorTracker::DEFAULT_TEAM_ID,
             new MemoryTeamConfig('test', 31415, 27182)
         );

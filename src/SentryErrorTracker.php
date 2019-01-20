@@ -95,7 +95,7 @@ class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface,
     }
 
 
-    public function registerConnectionConfig(string $teamId, TeamConfigInterface $teamConfig): void
+    public function registerTeamConfig(string $teamId, TeamConfigInterface $teamConfig): void
     {
         $this->teamConfigs[$teamId] = $teamConfig;
     }

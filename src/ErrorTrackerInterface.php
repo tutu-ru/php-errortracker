@@ -9,7 +9,7 @@ interface ErrorTrackerInterface
 
     public function sendUnsentErrors(): void;
 
-    public function registerConnectionConfig(string $teamId, TeamConfigInterface $teamConfig): void;
+    public function registerTeamConfig(string $teamId, TeamConfigInterface $teamConfig): void;
 
     public function setTagsPreparer(TagsPreparerInterface $tagsPreparer): void;
 }

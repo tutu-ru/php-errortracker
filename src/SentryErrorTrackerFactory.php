@@ -16,10 +16,7 @@ class SentryErrorTrackerFactory
         ?StatsdExporterClientInterface $statsdExporterClient = null
     ): SentryErrorTracker {
         $errorTracker = new SentryErrorTracker(new SentryClientFactory($release));
-        $errorTracker->registerConnectionConfig(
-            SentryErrorTracker::DEFAULT_TEAM_ID,
-            new SentryDefaultTeamConfig($config)
-        );
+        $errorTracker->registerTeamConfig(SentryErrorTracker::DEFAULT_TEAM_ID, new SentryDefaultTeamConfig($config));
         if (!is_null($statsdExporterClient)) {
             $errorTracker->setStatsdExporterClient($statsdExporterClient);
         }
