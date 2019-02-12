@@ -3,15 +3,16 @@ declare(strict_types=1);
 
 namespace TutuRu\Tests\ErrorTracker;
 
+use TutuRu\Metrics\StatsdExporterClientInterface;
+use TutuRu\Tests\ErrorTracker\MemoryErrorTracker\MemoryErrorTracker;
 use TutuRu\Tests\ErrorTracker\MemoryErrorTracker\MemoryTeamConfig;
-use TutuRu\Tests\ErrorTracker\MemoryErrorTracker\MemoryErrorTrackerFactory;
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetric;
+use TutuRu\Tests\Metrics\MemoryStatsdExporter\MemoryStatsdExporterMetric;
 
 class ErrorTrackerTest extends BaseTest
 {
     public function testSendError()
     {
-        $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
+        $tracker = $this->createErrorTracker($this->statsdExporterClient);
         $tracker->setLogger($this->logger);
 
         $tracker->send(new \Exception('1'));
@@ -27,15 +28,15 @@ class ErrorTrackerTest extends BaseTest
             $tracker->getExceptions()
         );
 
-        $this->metricsExporter->save();
-        $metrics = $this->metricsExporter->getExportedMetrics();
+        $this->statsdExporterClient->save();
+        $metrics = $this->statsdExporterClient->getExportedMetrics();
         $this->assertCount(3, $metrics);
         foreach ($metrics as $metric) {
             $expectedTags = [
                 'project_slug' => 'undefined_project',
                 'severity'     => 'error',
                 'status'       => 'success',
-                'app'          => 'unknown',
+                'app'          => 'unittest',
             ];
             $this->assertMetric($metric, 'error_tracker_processing', $expectedTags);
         }
@@ -44,7 +45,7 @@ class ErrorTrackerTest extends BaseTest
 
     public function testSendWithTwoConnections()
     {
-        $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
+        $tracker = $this->createErrorTracker($this->statsdExporterClient);
         $tracker->setLogger($this->logger);
         $tracker->registerTeamConfig('second', new MemoryTeamConfig("second", 31416, 27183));
 
@@ -63,8 +64,8 @@ class ErrorTrackerTest extends BaseTest
             $secondClient->getExceptions()
         );
 
-        $this->metricsExporter->save();
-        $metrics = $this->metricsExporter->getExportedMetrics();
+        $this->statsdExporterClient->save();
+        $metrics = $this->statsdExporterClient->getExportedMetrics();
         $this->assertCount(2, $metrics);
         foreach ($metrics as $metric) {
             $this->assertMetric($metric, 'error_tracker_processing', $this->defaultTags());
@@ -74,7 +75,7 @@ class ErrorTrackerTest extends BaseTest
 
     public function testSendWithNotValidConnections()
     {
-        $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
+        $tracker = $this->createErrorTracker($this->statsdExporterClient);
         $tracker->setLogger($this->logger);
         $tracker->registerTeamConfig('second', new MemoryTeamConfig("", 0, 27183));
 
@@ -88,8 +89,8 @@ class ErrorTrackerTest extends BaseTest
             $defaultClient->getExceptions()
         );
 
-        $this->metricsExporter->save();
-        $metrics = $this->metricsExporter->getExportedMetrics();
+        $this->statsdExporterClient->save();
+        $metrics = $this->statsdExporterClient->getExportedMetrics();
         $this->assertCount(2, $metrics);
         foreach ($metrics as $metric) {
             $this->assertMetric($metric, 'error_tracker_processing', $this->defaultTags());
@@ -99,7 +100,7 @@ class ErrorTrackerTest extends BaseTest
 
     public function testSendWithBrokenConnections()
     {
-        $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
+        $tracker = $this->createErrorTracker($this->statsdExporterClient);
         $tracker->setLogger($this->logger);
         $tracker->registerTeamConfig('second', new MemoryTeamConfig("", 31416, 27183));
 
@@ -113,8 +114,8 @@ class ErrorTrackerTest extends BaseTest
             $defaultClient->getExceptions()
         );
 
-        $this->metricsExporter->save();
-        $metrics = $this->metricsExporter->getExportedMetrics();
+        $this->statsdExporterClient->save();
+        $metrics = $this->statsdExporterClient->getExportedMetrics();
         $this->assertCount(2, $metrics);
         $this->assertMetric($metrics[0], 'error_tracker_processing', $this->defaultTags('success'));
         $this->assertMetric($metrics[1], 'error_tracker_processing', $this->defaultTags('failure'));
@@ -123,7 +124,7 @@ class ErrorTrackerTest extends BaseTest
 
     public function testTagsPreparer()
     {
-        $tracker = MemoryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
+        $tracker = $this->createErrorTracker($this->statsdExporterClient);
         $tracker->setLogger($this->logger);
         $tracker->setTagsPreparer(new TagsPreparer());
 
@@ -133,8 +134,8 @@ class ErrorTrackerTest extends BaseTest
             $tracker->getExceptions()
         );
 
-        $this->metricsExporter->save();
-        $metrics = $this->metricsExporter->getExportedMetrics();
+        $this->statsdExporterClient->save();
+        $metrics = $this->statsdExporterClient->getExportedMetrics();
         $this->assertCount(1, $metrics);
         foreach ($metrics as $metric) {
             $this->assertMetric($metric, 'error_tracker_processing', $this->defaultTags());
@@ -148,14 +149,22 @@ class ErrorTrackerTest extends BaseTest
             'project_slug' => 'undefined_project',
             'severity'     => 'error',
             'status'       => $status,
-            'app'          => 'unknown',
+            'app'          => 'unittest',
         ];
     }
 
 
-    private function assertMetric(MemoryMetric $metric, string $expectedName, array $expectedTags)
+    private function assertMetric(MemoryStatsdExporterMetric $metric, string $expectedName, array $expectedTags)
     {
         $this->assertEquals($expectedName, $metric->getName());
         $this->assertEquals($expectedTags, $metric->getTags());
+    }
+
+
+    private function createErrorTracker(StatsdExporterClientInterface $statsdExporterClient): MemoryErrorTracker
+    {
+        $tracker = new MemoryErrorTracker('test');
+        $tracker->setStatsdExporterClient($statsdExporterClient);
+        return $tracker;
     }
 }

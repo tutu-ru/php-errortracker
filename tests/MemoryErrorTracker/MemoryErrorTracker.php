@@ -7,6 +7,16 @@ use TutuRu\ErrorTracker\SentryErrorTracker;
 
 class MemoryErrorTracker extends SentryErrorTracker
 {
+    public function __construct(?string $release = null)
+    {
+        parent::__construct(new MemorySentryClientFactory($release));
+        $this->registerTeamConfig(
+            SentryErrorTracker::DEFAULT_TEAM_ID,
+            new MemoryTeamConfig('test', 31415, 27182)
+        );
+    }
+
+
     public function getClientFactory(): MemorySentryClientFactory
     {
         return $this->clientFactory;

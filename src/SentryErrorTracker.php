@@ -7,13 +7,13 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use TutuRu\ErrorTracker\Sentry\SentryClient;
 use TutuRu\ErrorTracker\Sentry\SentryClientFactoryInterface;
-use TutuRu\Metrics\MetricAwareInterface;
-use TutuRu\Metrics\MetricAwareTrait;
+use TutuRu\Metrics\StatsdExporterAwareInterface;
+use TutuRu\Metrics\StatsdExporterAwareTrait;
 
-class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface, MetricAwareInterface
+class SentryErrorTracker implements ErrorTrackerInterface, LoggerAwareInterface, StatsdExporterAwareInterface
 {
     use LoggerAwareTrait;
-    use MetricAwareTrait;
+    use StatsdExporterAwareTrait;
 
     const DEFAULT_TEAM_ID = 'default';
 

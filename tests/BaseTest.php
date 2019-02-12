@@ -7,16 +7,15 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\Test\TestLogger;
 use TutuRu\Config\JsonConfig\MutableJsonConfig;
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporter;
-use TutuRu\Tests\Metrics\MemoryMetricExporter\MemoryMetricExporterFactory;
+use TutuRu\Tests\Metrics\MemoryStatsdExporter\MemoryStatsdExporterClient;
 
 abstract class BaseTest extends TestCase
 {
     /** @var MutableJsonConfig */
     protected $config;
 
-    /** @var MemoryMetricExporter */
-    protected $metricsExporter;
+    /** @var MemoryStatsdExporterClient */
+    protected $statsdExporterClient;
 
     /** @var LoggerInterface */
     protected $logger;
@@ -26,6 +25,6 @@ abstract class BaseTest extends TestCase
         parent::setUp();
         $this->config = new MutableJsonConfig(__DIR__ . '/configs/app.json');
         $this->logger = new TestLogger();
-        $this->metricsExporter = MemoryMetricExporterFactory::create($this->config);
+        $this->statsdExporterClient = new MemoryStatsdExporterClient("unittest");
     }
 }
