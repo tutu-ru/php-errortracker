@@ -10,7 +10,7 @@ class SentryErrorTrackerFactoryTest extends BaseTest
 {
     public function testCreate()
     {
-        $tracker = SentryErrorTrackerFactory::create($this->config, 'test', $this->metricsExporter);
+        $tracker = SentryErrorTrackerFactory::create($this->config, 'test', $this->statsdExporterClient);
         $this->assertInstanceOf(SentryErrorTracker::class, $tracker);
     }
 }
